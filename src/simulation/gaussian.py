@@ -69,8 +69,13 @@ class GaussianSimulator(SimulationModel):
         covariance = covariance_array(estimation, n_assets)
         rng = RandomStateManager().generator(config.random_seed)
 
+        mean = (
+            np.asarray(estimation.mean_returns, dtype=np.float64)
+            if config.use_mean_returns
+            else np.zeros(n_assets, dtype=np.float64)
+        )
         draws_by_step = rng.multivariate_normal(
-            mean=np.zeros(n_assets, dtype=np.float64),
+            mean=mean,
             cov=covariance,
             size=(config.horizon, config.n_simulations),
         )
@@ -85,5 +90,8 @@ class GaussianSimulator(SimulationModel):
             random_seed=config.random_seed,
             simulation_count=config.n_simulations,
             horizon=config.horizon,
-            model_params={"assumption": "gaussian"},
+            model_params={
+                "assumption": "gaussian",
+                "use_mean_returns": config.use_mean_returns,
+            },
         )

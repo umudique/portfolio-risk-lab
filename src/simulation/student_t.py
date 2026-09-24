@@ -76,6 +76,11 @@ class StudentTSimulator(SimulationModel):
         covariance = covariance_array(estimation, n_assets)
         rng = RandomStateManager().generator(config.random_seed)
 
+        mean = (
+            np.asarray(estimation.mean_returns, dtype=np.float64)
+            if config.use_mean_returns
+            else np.zeros(n_assets, dtype=np.float64)
+        )
         cholesky = np.linalg.cholesky(covariance)
         normal_draws = (
             rng.normal(size=(config.n_simulations, config.horizon, n_assets)) @ cholesky.T
@@ -84,7 +89,7 @@ class StudentTSimulator(SimulationModel):
             df=degrees_of_freedom,
             size=(config.n_simulations, config.horizon, 1),
         )
-        asset_paths = normal_draws / np.sqrt(chi_square_draws / degrees_of_freedom)
+        asset_paths = normal_draws / np.sqrt(chi_square_draws / degrees_of_freedom) + mean
         portfolio_paths = PortfolioPathAggregator().aggregate(asset_paths, portfolio.weights)
         terminal_returns = terminal_compounded_returns(portfolio_paths)
 
@@ -95,5 +100,8 @@ class StudentTSimulator(SimulationModel):
             random_seed=config.random_seed,
             simulation_count=config.n_simulations,
             horizon=config.horizon,
-            model_params={"degrees_of_freedom": degrees_of_freedom},
+            model_params={
+                "degrees_of_freedom": degrees_of_freedom,
+                "use_mean_returns": config.use_mean_returns,
+            },
         )

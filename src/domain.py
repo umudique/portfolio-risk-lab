@@ -44,6 +44,7 @@ class AnalysisConfig:
     student_t_degrees_of_freedom: float = 5.0
     bootstrap_config: BootstrapConfig = field(default_factory=BootstrapConfig)
     scenario_definitions: tuple[ScenarioDefinition, ...] = field(default_factory=tuple)
+    use_mean_returns: bool = False
 
 
 # ---------------------------------------------------------------------------
