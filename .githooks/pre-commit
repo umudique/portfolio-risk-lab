@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Quality gate: format → lint → type check → tests.
+set -euo pipefail
+
+echo "portfolio-risk-lab pre-commit"
+echo "────────────────────────────────"
+
+run() {
+  local step="$1" label="$2"; shift 2
+  printf "[%s] %-8s" "$step" "$label"
+  if "$@" > /tmp/prl-hook.log 2>&1; then
+    echo "  ✓ ok"
+  else
+    echo "  ✗ FAILED"
+    cat /tmp/prl-hook.log
+    exit 1
+  fi
+}
+
+run "1/4" "format"  uv run ruff format --check .
+run "2/4" "lint"    uv run ruff check .
+run "3/4" "mypy"    uv run mypy src
+
+printf "[%s] %-8s" "4/4" "pytest"
+code=0
+uv run pytest -m "not slow" > /tmp/prl-hook.log 2>&1 || code=$?
+if [[ $code -eq 0 || $code -eq 5 ]]; then
+  echo "  ✓ ok"
+else
+  echo "  ✗ FAILED"
+  cat /tmp/prl-hook.log
+  exit 1
+fi
+
+echo "────────────────────────────────"
+echo "pre-commit passed"

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Enforce: conventional commit prefix + 72-char subject line limit.
+set -euo pipefail
+
+MSG_FILE="$1"
+SUBJECT=$(head -1 "$MSG_FILE")
+
+if [[ ${#SUBJECT} -gt 72 ]]; then
+  echo "commit-msg: subject line is ${#SUBJECT} chars (max 72)."
+  echo "  $SUBJECT"
+  exit 1
+fi
+
+PREFIXES="feat fix test refactor docs chore"
+if ! echo "$SUBJECT" | grep -qE "^(feat|fix|test|refactor|docs|chore)(\([a-z/]+\))?!?: .+"; then
+  echo "commit-msg: subject must start with a conventional commit prefix."
+  echo "  Allowed: $PREFIXES"
+  echo "  Got: $SUBJECT"
+  exit 1
+fi

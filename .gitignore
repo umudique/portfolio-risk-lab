@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data files — not committed; too large or contain credentials
+data/
+*.csv
+*.parquet
+
+# Notebook outputs
+notebooks/**/*.ipynb
+
+# Environment
+.env
+.env.local
+
+# Agent operational documents — local only
+/AGENTS.md
+/docs/
