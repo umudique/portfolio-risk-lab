@@ -151,3 +151,7 @@ class DiagnosticReport:
     estimation_window: str
     observation_count: int
     run_date: date
+    # UI presentation fields — populated by the orchestrator for dashboard rendering
+    model_risk_level: str = "UNKNOWN"
+    simulation_results: tuple[Any, ...] = field(default_factory=tuple)
+    return_estimation: Any = None

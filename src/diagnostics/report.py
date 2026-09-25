@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from datetime import date
+from typing import Any
 
 from src.domain import DiagnosticReport, ModelRiskFinding, ScenarioResult
 
@@ -42,6 +43,9 @@ class DiagnosticReportBuilder:
         estimation_window: str,
         observation_count: int,
         run_date: date,
+        model_risk_level: str = "UNKNOWN",
+        simulation_results: tuple[Any, ...] = (),
+        return_estimation: Any = None,
     ) -> DiagnosticReport:
         """Build a canonical diagnostic report.
 
@@ -73,4 +77,7 @@ class DiagnosticReportBuilder:
             estimation_window=estimation_window,
             observation_count=observation_count,
             run_date=run_date,
+            model_risk_level=model_risk_level,
+            simulation_results=simulation_results,
+            return_estimation=return_estimation,
         )

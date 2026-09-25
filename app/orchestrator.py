@@ -92,11 +92,12 @@ class ConcreteAnalysisOrchestrator:
             correlation_matrix=correlation_matrix,
         )
 
-        risk_results = _run_simulations(portfolio, estimation, config)
+        risk_results, sim_results = _run_simulations(portfolio, estimation, config)
         scenario_definitions = config.scenario_definitions or _default_scenarios(portfolio)
         scenario_results = _run_scenarios(portfolio, scenario_definitions)
         comparison_rows = ModelComparisonTableBuilder().build(risk_results)
         findings = _generate_findings(risk_results)
+        model_risk_level = _compute_model_risk_level(risk_results)
 
         return DiagnosticReportBuilder().build(
             comparison_rows=comparison_rows,
@@ -105,6 +106,9 @@ class ConcreteAnalysisOrchestrator:
             estimation_window=estimation.estimation_window,
             observation_count=estimation.observation_count,
             run_date=date.today(),
+            model_risk_level=model_risk_level,
+            simulation_results=tuple(sim_results),
+            return_estimation=estimation,
         )
 
 
@@ -143,12 +147,16 @@ def _run_simulations(
     portfolio: Portfolio,
     estimation: Any,
     config: AnalysisConfig,
-) -> list[RiskResult]:
+) -> tuple[list[RiskResult], list[Any]]:
+    from src.domain import SimulationResult
+
     simulators = [GaussianSimulator(), StudentTSimulator(), HistoricalBootstrapSimulator()]
     risk_results: list[RiskResult] = []
+    sim_results: list[SimulationResult] = []
 
     for simulator in simulators:
         sim_result = simulator.simulate(portfolio, estimation, config)
+        sim_results.append(sim_result)
         terminal = np.asarray(sim_result.terminal_returns, dtype=np.float64)
         paths = np.asarray(sim_result.portfolio_paths, dtype=np.float64)
 
@@ -182,7 +190,21 @@ def _run_simulations(
             )
         )
 
-    return risk_results
+    return risk_results, sim_results
+
+
+def _compute_model_risk_level(risk_results: list[RiskResult]) -> str:
+    if len(risk_results) < 2:
+        return "UNKNOWN"
+    vars_ = [r.var for r in risk_results]
+    es_ = [r.expected_shortfall for r in risk_results]
+    var_range = max(vars_) - min(vars_)
+    es_range = max(es_) - min(es_)
+    if var_range > 0.03 or es_range > 0.05:
+        return "HIGH"
+    if var_range > 0.01 or es_range > 0.02:
+        return "MODERATE"
+    return "LOW"
 
 
 def _run_scenarios(
@@ -215,12 +237,16 @@ def _generate_findings(risk_results: list[RiskResult]) -> list[ModelRiskFinding]
     baseline = risk_results[0]
     for other in risk_results[1:]:
         for metric, attr in _COMPARED_METRICS:
+            value_a = getattr(baseline, attr)
+            value_b = getattr(other, attr)
+            if value_a == 0.0:
+                continue
             finding = generator.generate(
                 metric=metric,
                 model_a=baseline.model_name,
                 model_b=other.model_name,
-                value_a=getattr(baseline, attr),
-                value_b=getattr(other, attr),
+                value_a=value_a,
+                value_b=value_b,
             )
             if finding is not None:
                 findings.append(finding)
