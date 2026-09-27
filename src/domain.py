@@ -155,3 +155,4 @@ class DiagnosticReport:
     model_risk_level: str = "UNKNOWN"
     simulation_results: tuple[Any, ...] = field(default_factory=tuple)
     return_estimation: Any = None
+    portfolio_weights: dict[str, float] | None = None

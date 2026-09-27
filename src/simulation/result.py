@@ -24,6 +24,12 @@ class ComparableArray:
     def __eq__(self, other: object) -> bool:
         return bool(np.array_equal(self._values, np.asarray(other)))
 
+    def __iter__(self) -> Any:
+        return iter(self._values)
+
+    def __len__(self) -> int:
+        return len(self._values)
+
     def __repr__(self) -> str:
         return repr(self._values)
 

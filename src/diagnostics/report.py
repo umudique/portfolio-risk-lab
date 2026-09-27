@@ -46,6 +46,7 @@ class DiagnosticReportBuilder:
         model_risk_level: str = "UNKNOWN",
         simulation_results: tuple[Any, ...] = (),
         return_estimation: Any = None,
+        portfolio_weights: dict[str, float] | None = None,
     ) -> DiagnosticReport:
         """Build a canonical diagnostic report.
 
@@ -80,4 +81,5 @@ class DiagnosticReportBuilder:
             model_risk_level=model_risk_level,
             simulation_results=simulation_results,
             return_estimation=return_estimation,
+            portfolio_weights=portfolio_weights,
         )

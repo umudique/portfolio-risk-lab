@@ -74,6 +74,11 @@ class ModelComparisonTableBuilder:
             rows[5][result.model_name] = result.mean_simulated_loss
             rows[6][result.model_name] = result.worst_simulated_loss
 
+        var_vals = [r.var for r in risk_results]
+        es_vals = [r.expected_shortfall for r in risk_results]
+        rows.append({"metric": "VaR range", "value": round(max(var_vals) - min(var_vals), 4)})
+        rows.append({"metric": "ES range", "value": round(max(es_vals) - min(es_vals), 4)})
+
         return rows
 
 
