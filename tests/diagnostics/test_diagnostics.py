@@ -65,6 +65,18 @@ def test_model_comparison_table_aligns_three_models_with_required_rows() -> None
     assert any(row["metric"] == "95th Percentile Max Drawdown" for row in rows)
 
 
+def test_model_comparison_table_appends_var_and_es_range_rows() -> None:
+    rows = ModelComparisonTableBuilder().build(make_three_model_results())
+
+    var_range_row = next((r for r in rows if r.get("metric") == "VaR range"), None)
+    es_range_row = next((r for r in rows if r.get("metric") == "ES range"), None)
+
+    assert var_range_row is not None, "VaR range row must be present"
+    assert es_range_row is not None, "ES range row must be present"
+    assert var_range_row["value"] == pytest.approx(5.8 - 4.2, abs=1e-4)
+    assert es_range_row["value"] == pytest.approx(9.3 - 6.0, abs=1e-4)
+
+
 def test_relative_difference_calculator_known_expected_shortfall_values() -> None:
     relative_difference = RelativeDifferenceCalculator().calculate(
         baseline=6.0,
@@ -161,3 +173,20 @@ def test_diagnostic_report_builder_assembles_report_from_precomputed_outputs() -
         observation_count=1000,
         run_date=date(2026, 9, 24),
     )
+
+
+def test_diagnostic_report_builder_passes_portfolio_weights_through() -> None:
+    weights = {"SPY": 0.60, "TLT": 0.40}
+    comparison_rows = [{"metric": "VaR", "Gaussian": 4.2, "Student-t": 5.8, "Bootstrap": 5.1}]
+
+    report = DiagnosticReportBuilder().build(
+        comparison_rows=comparison_rows,
+        findings=[],
+        scenario_results=[],
+        estimation_window="756 trading days",
+        observation_count=756,
+        run_date=date(2026, 9, 27),
+        portfolio_weights=weights,
+    )
+
+    assert report.portfolio_weights == weights
