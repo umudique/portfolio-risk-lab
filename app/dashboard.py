@@ -50,9 +50,13 @@ html, body, [class*="css"] {
     font-family: 'IBM Plex Sans', sans-serif !important;
     font-weight: 400;
 }
-h1, h2, h3, h4,
+h1, .stTitle {
+    font-family: 'IBM Plex Sans', sans-serif !important;
+    font-weight: 700 !important;
+}
+h2, h3, h4,
 [data-testid="stHeading"],
-.stSubheader, .stTitle {
+.stSubheader {
     font-family: 'IBM Plex Sans', sans-serif !important;
     font-weight: 600 !important;
 }
@@ -66,17 +70,20 @@ code, pre, .stCodeBlock {
 [data-testid="stMetricValue"],
 .metric-value {
     font-size: 1.55rem !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
 }
 [data-testid="stMetricLabel"],
 .metric-label {
     font-size: 0.85rem !important;
-    font-weight: 400 !important;
+    font-weight: 600 !important;
 }
 .metric-value.bold { font-weight: 700 !important; }
 table td, table th {
     font-family: 'IBM Plex Mono', monospace !important;
     font-size: 0.82rem !important;
+}
+table th {
+    font-weight: 600 !important;
 }
 button[kind="secondary"] {
     padding: 0.1rem 0.5rem !important;
@@ -222,27 +229,31 @@ def render_dashboard(orchestrator: AnalysisOrchestrator) -> None:
         display_diagnostic_report(report, config)
         return
 
-    st.title("Portfolio Risk Lab")
-    st.caption(
-        "Upload a portfolio CSV and configure the analysis to see how sensitive "
-        "your risk estimate is to modelling assumptions."
-    )
-
-    uploaded_csv = st.file_uploader("Portfolio CSV", type=["csv"])
-
-    with st.form("analysis_parameters"):
-        confidence_level = st.number_input(
-            "Confidence level",
-            min_value=0.0,
-            max_value=1.0,
-            value=0.95,
-            step=0.01,
+    _, form_col, _ = st.columns([1, 3, 1])
+    with form_col:
+        st.title("Portfolio Risk Lab")
+        st.caption(
+            "Upload a portfolio CSV and configure the analysis to see how sensitive "
+            "your risk estimate is to modelling assumptions."
         )
-        horizon = st.number_input("Horizon", min_value=1, value=10, step=1)
-        n_simulations = st.number_input("Simulations", min_value=1, value=10_000, step=1_000)
-        loss_threshold = st.number_input("Loss threshold", min_value=0.0, value=0.10, step=0.01)
-        random_seed = st.number_input("Random seed", value=42, step=1)
-        submitted = st.form_submit_button("Run analysis", type="primary", use_container_width=True)
+
+        uploaded_csv = st.file_uploader("Portfolio CSV", type=["csv"])
+
+        with st.form("analysis_parameters"):
+            confidence_level = st.number_input(
+                "Confidence level",
+                min_value=0.0,
+                max_value=1.0,
+                value=0.95,
+                step=0.01,
+            )
+            horizon = st.number_input("Horizon", min_value=1, value=10, step=1)
+            n_simulations = st.number_input("Simulations", min_value=1, value=10_000, step=1_000)
+            loss_threshold = st.number_input("Loss threshold", min_value=0.0, value=0.10, step=0.01)
+            random_seed = st.number_input("Random seed", value=42, step=1)
+            submitted = st.form_submit_button(
+                "Run analysis", type="primary", use_container_width=True
+            )
 
     if not submitted:
         return
