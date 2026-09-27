@@ -359,7 +359,7 @@ def render_model_risk_summary(report: DiagnosticReport, config: AnalysisConfig) 
         (
             row.get(next((k for k in row if k != "metric"), ""))
             for row in comparison_rows
-            if row.get("metric") == "P(loss > threshold)"
+            if row.get("metric") == "P(terminal loss > threshold)"
         ),
         None,
     )
@@ -392,7 +392,7 @@ def render_model_risk_summary(report: DiagnosticReport, config: AnalysisConfig) 
         "VaR disagreement", f"{float(var_range) * 100:.1f} pp" if var_range is not None else "—"
     )
     c2.metric("ES disagreement", f"{float(es_range) * 100:.1f} pp" if es_range is not None else "—")
-    c3.metric(f"P(loss > {_fmt_pct(config.loss_threshold)})", _fmt_pct(loss_prob))
+    c3.metric(f"P(terminal loss > {_fmt_pct(config.loss_threshold)})", _fmt_pct(loss_prob))
 
     _ctx_parts = [
         _tickers,

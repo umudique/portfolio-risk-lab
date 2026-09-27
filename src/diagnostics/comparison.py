@@ -59,7 +59,7 @@ class ModelComparisonTableBuilder:
         rows: list[dict[str, float | str]] = [
             {"metric": "VaR"},
             {"metric": "Expected Shortfall"},
-            {"metric": "P(loss > threshold)"},
+            {"metric": "P(terminal loss > threshold)"},
             {"metric": "Mean Max Drawdown"},
             {"metric": "95th Percentile Max Drawdown"},
             {"metric": "Mean Simulated Loss"},

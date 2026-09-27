@@ -55,7 +55,7 @@ def test_model_comparison_table_aligns_three_models_with_required_rows() -> None
             "Bootstrap": 7.8,
         },
         {
-            "metric": "P(loss > threshold)",
+            "metric": "P(terminal loss > threshold)",
             "Gaussian": 1.3,
             "Student-t": 4.4,
             "Bootstrap": 3.1,
@@ -132,7 +132,7 @@ def test_diagnostic_report_builder_assembles_report_from_precomputed_outputs() -
         {"metric": "VaR", "Gaussian": 4.2, "Student-t": 5.8, "Bootstrap": 5.1},
         {"metric": "Expected Shortfall", "Gaussian": 6.0, "Student-t": 9.3, "Bootstrap": 7.8},
         {
-            "metric": "P(loss > threshold)",
+            "metric": "P(terminal loss > threshold)",
             "Gaussian": 1.3,
             "Student-t": 4.4,
             "Bootstrap": 3.1,
