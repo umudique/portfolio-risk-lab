@@ -112,11 +112,11 @@ This model systematically underestimates tail risk for equity portfolios.
 
 #### Student-t
 
-Multivariate Student-t simulation. Uses the same covariance parameterisation as Gaussian but adds a degrees-of-freedom parameter that controls tail weight. At high degrees of freedom (> 30), the Student-t converges to the Gaussian. At low degrees of freedom (4–6), it produces substantially heavier tails.
+Multivariate Student-t simulation. The scale matrix is calibrated from the same historical covariance estimate. At low degrees of freedom, the effective variance is inflated relative to the Gaussian model — at df=5, by a factor of 1.67. At high degrees of freedom (> 30), the Student-t converges to the Gaussian.
 
 #### Historical Bootstrap
 
-Resamples full-portfolio daily return vectors from the observed history with replacement. Preserves the empirical joint distribution, including fat tails, skewness, and any correlation regime shifts present in the data. Makes no distributional assumption.
+Resamples full-portfolio daily return vectors from the observed history with replacement. Preserves the empirical joint distribution, including fat tails, skewness, and the cross-sectional dependence structure present in sampled return vectors. Makes no distributional assumption.
 
 ### Risk Measures
 
