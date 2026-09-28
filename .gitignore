@@ -24,7 +24,8 @@ notebooks/**/*.ipynb
 
 # Agent operational documents — local only
 /AGENTS.md
-/docs/
+/docs/*
+!/docs/images/
 
 # Local demo scripts
 demo_*.py

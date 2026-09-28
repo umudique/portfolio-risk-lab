@@ -44,9 +44,9 @@ That divergence is model risk. Reporting a single VaR without acknowledging it i
 
 | Model | VaR | Expected Shortfall |
 |---|---|---|
-| Gaussian | 4.2% | 6.0% |
-| Student-t | 6.1% | 8.4% |
-| Historical Bootstrap | 4.2% | 6.0% |
+| Gaussian | 4.8% | 6.0% |
+| Student-t | 6.0% | 7.9% |
+| Historical Bootstrap | 4.1% | 5.5% |
 
 - VaR range across models: **1.9 percentage points**
 - ES range across models: **2.4 percentage points**
