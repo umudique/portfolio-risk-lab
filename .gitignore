@@ -13,6 +13,7 @@ htmlcov/
 # Data files — not committed; too large or contain credentials
 data/
 *.csv
+!examples/*.csv
 *.parquet
 
 # Notebook outputs
