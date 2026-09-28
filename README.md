@@ -40,21 +40,21 @@ That divergence is model risk. Reporting a single VaR without acknowledging it i
 
 ## Example Result
 
-**Demo:** SPY / QQQ / TLT · equal-weight · 95% confidence · 10-day horizon · 10,000 simulations
+**Demo:** QQQ 30% / SPY 50% / TLT 20% · 95% confidence · 10-day horizon · 10,000 simulations
 
 | Model | VaR | Expected Shortfall |
 |---|---|---|
-| Gaussian | 4.1% | 5.2% |
-| Student-t | 6.3% | 9.1% |
-| Historical Bootstrap | 5.8% | 7.4% |
+| Gaussian | 4.2% | 6.0% |
+| Student-t | 6.1% | 8.4% |
+| Historical Bootstrap | 4.2% | 6.0% |
 
-- VaR range across models: **2.2 percentage points**
-- ES range across models: **3.9 percentage points**
-- P(loss > 10%) across models: 3.1% – 8.7%
+- VaR range across models: **1.9 percentage points**
+- ES range across models: **2.4 percentage points**
+- P(terminal loss > 10%) across models: **0.0%** at a 10-day horizon
 
-**Model Risk: HIGH**
+**Model Risk: MODERATE**
 
-Tail-risk estimates vary materially across model assumptions, with Student-t producing the most conservative VaR and ES. The spread is large enough that the choice of model has a meaningful effect on risk limits.
+Models diverge on tail estimates, with Student-t producing the most conservative VaR and ES. The spread signals meaningful model uncertainty at the tail, though all three models agree that a 10-day terminal loss exceeding 10% is near-zero probability for this portfolio.
 
 ---
 
